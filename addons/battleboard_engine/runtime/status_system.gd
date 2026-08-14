@@ -1,11 +1,12 @@
 class_name BBStatusSystem
 extends RefCounted
 
-static func apply(statuses: Dictionary, profile_id: String, status_id: String, duration: int, potency := 1.0) -> Dictionary:
+static func apply(statuses: Dictionary, profile_id: String, status_id: String, duration: int, potency := 1.0, modifier_key := "") -> Dictionary:
 	var profile_statuses: Dictionary = statuses.get(profile_id, {}).duplicate(true)
 	profile_statuses[status_id] = {
 		"duration": maxi(1, duration),
 		"potency": potency,
+		"modifier": modifier_key,
 	}
 	statuses[profile_id] = profile_statuses
 	return profile_statuses[status_id]
