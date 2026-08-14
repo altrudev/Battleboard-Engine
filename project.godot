@@ -1,0 +1,9 @@
+; Battleboard Engine headless validation project.
+config_version=5
+
+[application]
+config/name="Battleboard Engine Runtime"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
