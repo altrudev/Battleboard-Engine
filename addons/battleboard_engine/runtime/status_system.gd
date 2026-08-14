@@ -43,7 +43,8 @@ static func tick(statuses: Dictionary) -> Array[Dictionary]:
 
 static func modifier(statuses: Dictionary, profile_id: String, key: String) -> float:
 	var total := 0.0
-	for raw_entry in (statuses.get(profile_id, {}) as Dictionary).values():
+	var profile_statuses: Dictionary = statuses.get(profile_id, {})
+	for raw_entry in profile_statuses.values():
 		var entry: Dictionary = raw_entry
 		if str(entry.get("modifier", "")) == key:
 			total += float(entry.get("potency", 0.0))
