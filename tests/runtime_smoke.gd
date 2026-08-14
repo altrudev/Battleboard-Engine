@@ -5,6 +5,8 @@ var failures := 0
 func _init() -> void:
 	_test_transactional_capture()
 	_test_deterministic_simulation()
+	_test_replay_roundtrip()
+	_test_ability_status_resolution()
 	_test_planner_repeatability()
 	_test_profile_schema()
 	if failures > 0:
@@ -43,6 +45,47 @@ func _test_deterministic_simulation() -> void:
 	_check(bool(first_result["ok"]) and bool(second_result["ok"]), "deterministic engagement executes")
 	_check(first_result["simulation_hash"] == second_result["simulation_hash"], "same seed produces same simulation hash")
 	_check(first.event_log == second.event_log, "same seed produces same event log")
+
+func _test_replay_roundtrip() -> void:
+	var state := BBBoardState.new()
+	state.register_profile("alpha", Vector2i(0, 0), "rook", "player")
+	state.register_profile("beta", Vector2i(7, 7), "rook", "rival")
+	var profiles := {
+		"alpha": _profile("alpha", [60, 60, 60, 60]),
+		"beta": _profile("beta", [60, 60, 60, 60]),
+	}
+	var command := BBMatchCommand.move("alpha", Vector2i(0, 1))
+	var simulation := BBMatchSimulation.new()
+	simulation.setup(state, profiles, 4242)
+	var replay := BBReplay.new()
+	replay.begin(state, 4242)
+	var result := simulation.apply_command(command)
+	_check(bool(result["ok"]), "replay source command executes")
+	if bool(result["ok"]):
+		replay.record(command, str(result["simulation_hash"]))
+		var replay_result := replay.play(profiles)
+		_check(bool(replay_result["ok"]), "recorded command replays with matching hash")
+
+func _test_ability_status_resolution() -> void:
+	var attacker := _profile("caster", [180, 120, 100, 80])
+	var defender := _profile("target", [20, 20, 20, 20])
+	var ability := BBAbilityDefinition.from_dictionary({
+		"id": "break_guard",
+		"name": "Break Guard",
+		"power_multiplier": 1.25,
+		"status_effects": [{
+			"id": "guard_broken",
+			"target": "defender",
+			"duration": 2,
+			"potency": -15.0,
+			"modifier": "guard",
+		}],
+	})
+	var statuses: Dictionary = {}
+	var result := BBAbilitySystem.resolve(attacker, defender, ability, BBDeterministicRNG.new(1), statuses)
+	_check(bool(result["ok"]), "ability resolver executes")
+	_check(statuses.has("target"), "winning deterministic ability applies target status")
+	_check(BBStatusSystem.modifier(statuses, "target", "guard") == -15.0, "status modifier is queryable")
 
 func _test_planner_repeatability() -> void:
 	var state := BBBoardState.new()
