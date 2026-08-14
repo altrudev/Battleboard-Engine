@@ -33,7 +33,8 @@ static func from_dictionary(data: Dictionary) -> BBProfile:
 	p.relationships = data.get("relationships", {}).duplicate(true)
 	for raw_ability in data.get("abilities", []):
 		if raw_ability is Dictionary:
-			p.abilities.append(BBAbilityDefinition.from_dictionary(raw_ability))
+			var ability_data: Dictionary = raw_ability
+			p.abilities.append(BBAbilityDefinition.from_dictionary(ability_data))
 	p.equipment = data.get("equipment", {}).duplicate(true)
 	p.metadata = data.get("metadata", {}).duplicate(true)
 	return p
