@@ -17,7 +17,8 @@ static func build(state: BBBoardState, side: String) -> Dictionary:
 	return result
 
 static func pressure_at(state: BBBoardState, side: String, cell: Vector2i) -> int:
-	return int(build(state, side).get(cell, []).size())
+	var attackers: Array = build(state, side).get(cell, [])
+	return attackers.size()
 
 static func attackers_at(state: BBBoardState, side: String, cell: Vector2i) -> Array[String]:
 	var result: Array[String] = []
@@ -27,6 +28,7 @@ static func attackers_at(state: BBBoardState, side: String, cell: Vector2i) -> A
 
 static func total_pressure(state: BBBoardState, side: String) -> int:
 	var total := 0
-	for attackers in build(state, side).values():
-		total += (attackers as Array).size()
+	for raw_attackers in build(state, side).values():
+		var attackers: Array = raw_attackers
+		total += attackers.size()
 	return total
