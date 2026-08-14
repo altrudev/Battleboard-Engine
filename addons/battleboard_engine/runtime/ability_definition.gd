@@ -19,7 +19,8 @@ static func from_dictionary(data: Dictionary) -> BBAbilityDefinition:
 	ability.cooldown = float(data.get("cooldown", 0.0))
 	for raw_effect in data.get("status_effects", []):
 		if raw_effect is Dictionary:
-			ability.status_effects.append((raw_effect as Dictionary).duplicate(true))
+			var effect: Dictionary = raw_effect
+			ability.status_effects.append(effect.duplicate(true))
 	return ability
 
 func to_dictionary() -> Dictionary:
