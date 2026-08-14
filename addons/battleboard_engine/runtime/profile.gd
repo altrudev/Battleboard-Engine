@@ -26,6 +26,20 @@ static func from_dictionary(data: Dictionary) -> BBProfile:
 	p.relationships = data.get("relationships", {}).duplicate(true)
 	return p
 
+func to_dictionary() -> Dictionary:
+	return {
+		"id": profile_id,
+		"name": display_name,
+		"background": background,
+		"level": level,
+		"stats": stats.duplicate(true),
+		"aptitudes": aptitudes.duplicate(true),
+		"predispositions": predispositions.duplicate(),
+		"experiences": experiences.duplicate(),
+		"traits": traits.duplicate(),
+		"relationships": relationships.duplicate(true),
+	}
+
 func aptitude_for(position_name: String) -> float:
 	return float(aptitudes.get(position_name.to_lower(), 0.0))
 
@@ -34,3 +48,9 @@ func relationship_with(other_id: String) -> float:
 
 func stat(stat_name: String, fallback := 50.0) -> float:
 	return float(stats.get(stat_name, fallback))
+
+func set_relationship(other_id: String, value: float) -> void:
+	relationships[other_id] = clampf(value, -100.0, 100.0)
+
+func adjust_relationship(other_id: String, amount: float) -> void:
+	set_relationship(other_id, relationship_with(other_id) + amount)
