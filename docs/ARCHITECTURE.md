@@ -26,8 +26,10 @@ Battleboard's logical state is authoritative. Presentation consumes state and ne
 - `BBMatchEvent`: ordered event records for replay and evidence.
 - `BBDeterministicRNG`: seeded reproducible random stream.
 - `BBCombatResolver`: headless engagement estimate and resolution.
-- `BBStatusSystem`: deterministic timed status lifecycle.
-- `BBMatchSimulation`: command validation, authoritative state transitions, event logging, snapshots and simulation hashes.
+- `BBAbilitySystem`: deterministic ability resolution and status application.
+- `BBStatusSystem`: deterministic timed status lifecycle and combat modifiers.
+- `BBMatchSimulation`: command validation, rollback-safe authoritative state transitions, event logging, snapshots and simulation hashes.
+- `BBReplay`: initial-state/seed/command recording with per-step hash verification.
 - `BBTacticalPlanner`: deterministic multi-ply beam search over projected board states.
 - `BBEncounterContext`: tactical-board to direct-control handoff data used by the game layer.
 
