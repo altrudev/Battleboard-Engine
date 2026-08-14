@@ -56,7 +56,7 @@ func _scan(node: Node) -> void:
 		animation_tree = node as AnimationTree
 	if skeleton == null and node is Skeleton3D:
 		skeleton = node as Skeleton3D
-	var lowered := node.name.to_lower()
+	var lowered := str(node.name).to_lower()
 	if equipment_socket == null and lowered in ["equipment_socket", "weapon_socket", "hand_r_socket"] and node is Node3D:
 		equipment_socket = node as Node3D
 	if label_anchor == null and lowered in ["label_anchor", "head_anchor", "ui_anchor"] and node is Node3D:
